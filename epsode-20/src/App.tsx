@@ -1,5 +1,10 @@
 import React, { useCallback, useRef } from "react";
-import { useTodos } from "./useTodos";
+import {
+  useTodos,
+  useAddTodos,
+  useRemoveTodos,
+  TodosProvider,
+} from "./useTodos";
 import "./App.css";
 
 const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
@@ -53,9 +58,9 @@ function UL<T>({
 }
 
 function App() {
-  const { todos, addTodo, removeTodo } = useTodos([
-    { id: 0, text: "Hey there", done: false },
-  ]);
+  const todos = useTodos();
+  const addTodo = useAddTodos();
+  const removeTodo = useRemoveTodos();
 
   const newTodoRef = useRef<HTMLInputElement>(null);
 
@@ -90,4 +95,27 @@ function App() {
   );
 }
 
-export default App;
+const JustShowTodos = () => {
+  const todos = useTodos();
+
+  return (
+    <UL
+      items={todos}
+      itemClick={() => {}}
+      render={(todo) => <>{todo.text}</>}
+    />
+  );
+};
+
+const AppWrapper = () => (
+  <TodosProvider
+    initialTodos={[{ id: 0, text: "Hey there useContext", done: false }]}
+  >
+    <div style={{ display: "grid", gridTemplateColumns: "50% 50%" }}>
+      <App />
+      <JustShowTodos />
+    </div>
+  </TodosProvider>
+);
+
+export default AppWrapper;
